@@ -1,8 +1,6 @@
 import argparse
 from dataset import load_dataset
 from parse import parse_model, parser_add_main_args
-from sklearn.metrics import accuracy_score
-
 
 parser = argparse.ArgumentParser(description='General Execution Pipeline')
 parser_add_main_args(parser)

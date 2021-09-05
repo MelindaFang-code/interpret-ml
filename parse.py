@@ -19,6 +19,7 @@ def parse_model(args):
 
 
 def parser_add_main_args(parser):
+    """ Add arguments to parser """
     parser.add_argument('--dataset', type=str)
     parser.add_argument('--method', '-m', type=str, default='RandomForest')
     parser.add_argument('--train_prop', type=float, default=0.8, help='Proportion of data to use for training')

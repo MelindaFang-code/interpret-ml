@@ -2,6 +2,7 @@ import numpy as np
 
 
 def compute_indices(n, train_prop: float, valid_prop: float):
+    """ Compute the indices for train, val, test splits. """
     train_num = int(n * train_prop)
     valid_num = int(n * valid_prop)
 
