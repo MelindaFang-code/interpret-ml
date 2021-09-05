@@ -3,7 +3,10 @@ from data_utils import compute_indices
 
 
 class Dataset(object):
-    def __init__(self, X, y, train_prop: float, valid_prop: float):
+    """
+    Represents datasets, containing train, val, and test for X, y
+    """
+    def __init__(self, X, y, train_prop, valid_prop):
         n = X.shape[0]
         train_indices, val_indices, test_indices = compute_indices(n, train_prop, valid_prop)
 
@@ -27,6 +30,10 @@ def load_dataset(dataset_name: str, train_prop: float, valid_prop: float) -> Dat
     """
     if dataset_name == 'taiwan_credit_risk':
         dataset = load_taiwan_credit_risk(train_prop, valid_prop)
+    elif dataset_name == 'ames_housing':
+        dataset = load_ames_housing(train_prop, valid_prop)
+    elif dataset_name == 'civil_war_onset':
+        dataset = load_civil_war_onset(train_prop, valid_prop)
     else:
         raise ValueError('Invalid dataset name')
     return dataset
@@ -39,3 +46,17 @@ def load_taiwan_credit_risk(train_prop, valid_prop) -> Dataset:
 
     dataset = Dataset(X, y, train_prop, valid_prop)
     return dataset
+
+
+def load_ames_housing(train_prop, valid_prop) -> Dataset:
+    train = pd.read_csv('datasets/ames_housing/ames_housing_training.csv')
+    test = pd.read_csv('datasets/ames_housing/ames_housing_test.csv')
+
+    raise NotImplementedError
+
+
+def load_civil_war_onset(train_prop, valid_prop) -> Dataset:
+    # Dataset from Ethnicity, Insurgency, and Civil War by Fearon and Laitin 2003
+    # Used by https://journals.sagepub.com/doi/pdf/10.1177/2053168020905487
+
+    raise NotImplementedError
