@@ -59,4 +59,9 @@ def load_civil_war_onset(train_prop, valid_prop) -> Dataset:
     # Dataset from Ethnicity, Insurgency, and Civil War by Fearon and Laitin 2003
     # Used by https://journals.sagepub.com/doi/pdf/10.1177/2053168020905487
 
-    raise NotImplementedError
+    df = pd.read_csv('datasets/fearson_laitin.csv')
+    X = df['onset']
+    y = df.loc[:, df.columns != 'onset']
+
+    raise NotImplementedError 
+
