@@ -1,5 +1,8 @@
 import pandas as pd
 from data_utils import compute_indices
+import numpy as np
+import math
+
 
 
 class Dataset(object):
@@ -31,7 +34,8 @@ def load_dataset(dataset_name: str, train_prop: float, valid_prop: float) -> Dat
     if dataset_name == 'taiwan_credit_risk':
         dataset = load_taiwan_credit_risk(train_prop, valid_prop)
     elif dataset_name == 'ames_housing':
-        dataset = load_ames_housing(train_prop, valid_prop)
+        assert train_prop + valid_prop == 1
+        dataset = load_ames_housing(valid_prop)
     elif dataset_name == 'civil_war_onset':
         dataset = load_civil_war_onset(train_prop, valid_prop)
     else:
@@ -48,15 +52,45 @@ def load_taiwan_credit_risk(train_prop, valid_prop) -> Dataset:
     return dataset
 
 
-def load_ames_housing(train_prop, valid_prop) -> Dataset:
-    train = pd.read_csv('datasets/ames_housing/ames_housing_training.csv')
-    test = pd.read_csv('datasets/ames_housing/ames_housing_test.csv')
+def process_ames(X):
+    ''' Helper for preprocess ames housing. Should be improved'''
+    # TODO: feature selection
+    # For now, pick a subset that intuitively would be predictive
+    df = X[['Neighborhood', 'YearBuilt', 'TotalBsmtSF', 'GrLivArea','BedroomAbvGr', 'KitchenAbvGr', 'TotRmsAbvGrd','OpenPorchSF','PoolArea','MoSold', 'YrSold', 'SaleType']]
+    df = pd.get_dummies(df)
+    # cyclical encoding for month
+    df['MoSold_cos'] = np.cos(2 * math.pi * df["MoSold"] / df["MoSold"].max()) 
+    df['MoSold_sin'] = np.sin(2 * math.pi * df["MoSold"] / df["MoSold"].max())
+    df = df.drop('MoSold', axis=1)
+    return df
 
-    raise NotImplementedError
+
+def load_ames_housing(valid_prop) -> Dataset:
+
+    train = pd.read_csv('datasets/ames_housing/ames_housing_training.csv', index_col=0)
+    X_tr = train.iloc[:, 1:-1]
+    X_tr = process_ames(X_tr).to_numpy()
+    y_tr = train.iloc[:, -1].to_numpy()
+
+    test = pd.read_csv('datasets/ames_housing/ames_housing_test.csv', index_col=0)
+    X_test = test.iloc[:, 1:-1]
+    X_test = process_ames(X_test).to_numpy()
+    y_test = test.iloc[:, -1].to_numpy()
+
+    dataset = Dataset(X_tr, y_tr, 1-valid_prop, valid_prop) # Must use up the entire train set
+    dataset.X_test = X_test
+    dataset.y_test = y_test
+
+    return dataset
 
 
 def load_civil_war_onset(train_prop, valid_prop) -> Dataset:
     # Dataset from Ethnicity, Insurgency, and Civil War by Fearon and Laitin 2003
     # Used by https://journals.sagepub.com/doi/pdf/10.1177/2053168020905487
 
-    raise NotImplementedError
+    df = pd.read_csv('datasets/fearson_laitin.csv')
+    X = df['onset']
+    y = df.loc[:, df.columns != 'onset']
+
+    raise NotImplementedError 
+
