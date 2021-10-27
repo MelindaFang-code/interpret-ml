@@ -219,7 +219,7 @@ class AdditiveModel:
         n = Xp.shape[0]
         X, S_list = self.get_X_S_list(Xp)
         X1 = self.augment_X(X, S_list)
-        return self.lm.predict(X1)[:n, :]
+        return self.lm.predict(X1)[:n, :].flatten()
 
 class Scaler:
     

@@ -54,6 +54,8 @@ def load_taiwan_credit_risk(train_prop, valid_prop) -> Dataset:
 
 def process_ames(X):
     ''' Helper for preprocess ames housing. Should be improved'''
+    # TODO: feature selection
+    # For now, pick a subset that intuitively would be predictive
     df = X[['Neighborhood', 'YearBuilt', 'TotalBsmtSF', 'GrLivArea','BedroomAbvGr', 'KitchenAbvGr', 'TotRmsAbvGrd','OpenPorchSF','PoolArea','MoSold', 'YrSold', 'SaleType']]
     df = pd.get_dummies(df)
     # cyclical encoding for month
@@ -64,16 +66,15 @@ def process_ames(X):
 
 
 def load_ames_housing(valid_prop) -> Dataset:
-    train_full = pd.read_csv('datasets/ames_housing/ames_housing_training.csv', index_col=0)
-    train = process_ames(train_full)
-    test_full = pd.read_csv('datasets/ames_housing/ames_housing_test.csv', index_col=0)
-    test = process_ames(test_full)
-    # TODO: feature selection
-    # For now, pick a subset that intuitively would be predictive
 
-    X_tr = train.iloc[:, 1:-1].to_numpy()
+    train = pd.read_csv('datasets/ames_housing/ames_housing_training.csv', index_col=0)
+    X_tr = train.iloc[:, 1:-1]
+    X_tr = process_ames(X_tr).to_numpy()
     y_tr = train.iloc[:, -1].to_numpy()
-    X_test = test.iloc[:, 1:-1].to_numpy()
+
+    test = pd.read_csv('datasets/ames_housing/ames_housing_test.csv', index_col=0)
+    X_test = test.iloc[:, 1:-1]
+    X_test = process_ames(X_test).to_numpy()
     y_test = test.iloc[:, -1].to_numpy()
 
     dataset = Dataset(X_tr, y_tr, 1-valid_prop, valid_prop) # Must use up the entire train set

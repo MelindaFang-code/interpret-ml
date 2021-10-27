@@ -3,7 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from models import *
 
-# %%
 size = np.array([1.42,1.58,1.78,1.99,1.99,1.99,2.13,2.13,2.13,2.32,2.32,2.32,2.32,2.32,2.43,2.43,2.78,2.98,2.98])
 wear = np.array([4.0,4.2,2.5,2.6,2.8,2.4,3.2,2.4,2.6,4.8,2.9,3.8,3.0,2.7,3.1,3.3,3.0,2.8,1.7])
 
@@ -24,8 +23,6 @@ plt.plot(x, wear, '.')
 # plt.plot(xp, lm.predict(Xp), '.')
 b_hat = lin_reg_normal(X, wear)
 plt.plot(xp, Xp @ b_hat)
-
-  # %# %%
 
 # %% Penalized Regression Spline
 lmda = 0.001
@@ -63,5 +60,25 @@ am.fit(y_s)
 plt.plot(y, scaler_y.rev_transform(am.predict(X_s)), '.')
 
 # %%
+from dataset import *
+from models import *
+import matplotlib.pyplot as plt
+
+ames = load_dataset("ames_housing", 0.7, 0.3)
+X_tr = ames.X_train[:,:2]
+y_tr = ames.y_train
+print("y_tr", y_tr)
+
+scaler_X = Scaler(X_tr)
+scaler_y = Scaler(y_tr)
+X_trs = scaler_X.transform(X_tr)
+y_trs = scaler_y.transform(y_tr)
+
+lmdas = [0.01024, 5368.70912]
+am = AdditiveModel(X_trs, lmdas, 10)
+am.fit(y_trs)
+y_pred = scaler_y.rev_transform(am.predict(X_trs))
+print("y_pred", y_pred)
+plt.plot(y_tr, y_pred, '.')
 
 # %%
