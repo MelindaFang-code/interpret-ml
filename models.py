@@ -22,12 +22,20 @@ def calculate_mse(data_below, data_above):
     mse_split = r / n
     return mse_split
 
+def calc_mse_whole(data):
+    r = data[:,-1]-np.mean(data[:,-1])
+    n = len(r)
+    r = r ** 2
+    r = np.sum(r)
+    mse = r / n
+    return mse
+
 
 def determine_best_split(data, potential_splits):
-    print(f"Determining best split for {data.shape}")
-    overall_mse = 2147483647
+#     print(f"Determining best split for {data.shape}")
+    overall_mse = calc_mse_whole(data)
     for column_index in potential_splits:
-        print(f"column index: {column_index}")
+#         print(f"column index: {column_index}")
         time_split = 0
         for value in potential_splits[column_index]:
             
@@ -35,7 +43,7 @@ def determine_best_split(data, potential_splits):
             current_overall_mse = calculate_mse(data_below, data_above)
             if current_overall_mse < overall_mse:
                 overall_mse = current_overall_mse
-                print(f"overall mse: {overall_mse}")
+#                 print(f"overall mse: {overall_mse}")
                 best_split_column = column_index
                 best_split_value = value
 
@@ -48,7 +56,7 @@ def regression_tree(x_train, y_train):
 
 def regression_tree_helper(data, threshold):
 
-    print(data.shape)
+#     print(data.shape)
     if len(data) < threshold:
         return data[:, -1]
     else:
@@ -87,7 +95,7 @@ def classify_example(example, decision_tree, q):
     # recursive part
     else:
         residual_tree = answer
-        return classify_example(example, residual_tree)
+        return classify_example(example, residual_tree, q)
 
 
 

@@ -27,7 +27,7 @@ def classify_data(data):
 
 
 def get_potential_splits(data):
-    print(f"finding splits for {data.shape}")
+#     print(f"finding splits for {data.shape}")
     potential_splits = {}
     n_columns = data.shape[1]
     for column_index in range(n_columns - 1):
@@ -74,10 +74,10 @@ def calculate_overall_entropy(data_below, data_above):
 
 
 def determine_best_split(data, potential_splits):
-    print(f"Determining best split for {data.shape}")
+#     print(f"Determining best split for {data.shape}")
     overall_entropy = 2147483647
     for column_index in potential_splits:
-        print(f"column index: {column_index}")
+#         print(f"column index: {column_index}")
         time_split = 0
         for value in potential_splits[column_index]:
             
@@ -85,7 +85,7 @@ def determine_best_split(data, potential_splits):
             current_overall_entropy = calculate_overall_entropy(data_below, data_above)
             if current_overall_entropy < overall_entropy:
                 overall_entropy = current_overall_entropy
-                print(f"overall entropy: {overall_entropy}")
+#                 print(f"overall entropy: {overall_entropy}")
                 best_split_column = column_index
                 best_split_value = value
 
@@ -98,7 +98,7 @@ def decision_tree(x_train, y_train):
 
 
 def decision_tree_helper(data):
-    print(data.shape)
+#     print(data.shape)
     if check_purity(data):
         classification = classify_data(data)
         return classification
